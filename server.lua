@@ -88,14 +88,18 @@ AddEventHandler("just_dealerships:checkPeopleWorking", function(job, fromDealer)
 	local xPlayer = ESX.GetPlayerFromId(source)
     local Players = ESX.GetPlayers()
     local playersWorking = false
-    for i = 1, #Players, 1 do
-        local tPlayer = ESX.GetPlayerFromId(Players[i])
-        if tPlayer.job.name == job then
-            playersWorking = true
-            break
+    if Config.allowPurchaseWithoutDealer and job ~= nil then
+        for i = 1, #Players, 1 do
+            local tPlayer = ESX.GetPlayerFromId(Players[i])
+            if tPlayer.job.name == job then
+                playersWorking = true
+                break
+            end
         end
+    elseif job ~= nil then
+        playersWorking = true
     end
-    if playersWorking == true then 
+    if playersWorking == true and job ~= nil then
         if xPlayer.job.name == job or fromDealer then
             TriggerClientEvent('just_dealerships:showMenu', source, "purchase_confirmation_menu", true)
         else 

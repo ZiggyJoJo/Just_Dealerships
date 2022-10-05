@@ -13,6 +13,8 @@ Config.dealerCommision = 0.05
 Config.maxMissedPayments = 1 -- The number of payments that can be missed before the vehicle is repoed 
 Config.repoFine = 1.10 -- Tax added to get back a vehicle that was repoed
 
+Config.allowPurchaseWithoutDealer = true
+
 Config.usePEFCL = false
 
 Config.Dealerships = {
@@ -60,7 +62,7 @@ Config.Dealerships = {
         purchaseSpawn = {x = -15.097937583923, y = -1651.4471435547, z = 29.105464935303, h = 319.18426513672},
         testDriveReturn = {x = -30.3, y = -1675.7, z = 29.5, l = 10.8, w = 6.2, h = 320},
         zone = {name = 'mosleys', x = -37.1, y = -1671.26, z = 29.3, l = 115.0, w = 175.0, h = 50},
-        dealerZones = {{id = "101", x = -34.5, y = -1669.5, z = 29.5, l = 3.6, w = 2, h = 320}, {id = "101", x = -22.8, y = -1661.7, z = 29.5, l = 4.4, w = 2, h = 230}},
+        dealerZones = {{id = "101", x = -34.5, y = -1669.5, z = 29.5, l = 3.6, w = 2, h = 320}, {id = "102", x = -22.8, y = -1661.7, z = 29.5, l = 4.4, w = 2, h = 230}},
         blip = {
             scale = 0.7,
             sprite = 523,

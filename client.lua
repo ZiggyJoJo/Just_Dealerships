@@ -226,7 +226,7 @@ AddEventHandler('just_dealerships:atDealerZone', function ()
 				TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership)
 			end
             Citizen.Wait(0)
-        end 
+        end
     end)
 end)
 
