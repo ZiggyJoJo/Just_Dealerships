@@ -90,7 +90,7 @@ Config.Dealerships = {
     ['boatdealership'] = {
         label = "Boat Dealership",
         type = "boat",
-        job = "boatdealer",
+        job = nil,
         noDealerUpcharge = 1.0,
         displayPoints = {{id = "1001", x = -725.59014892578, y = -1327.7091064453, z = -0.5, h = 230.74185180664, radius = 8}, {id = "1002", x = -736.84765625, y = -1341.8270263672, z = -0.5, h = 231.9787902832, radius = 8}, {id= "1003", x = -749.05078125, y = -1355.0386962891, z = -0.5, h = 229.51211547852, radius = 8}},
         dealershipVehicles = {"toro", "longfin", "speeder", "tropic", "suntrap", "squalo", "seashark", "marquis", "jetmax", "dinghy", "dinghy2"},
@@ -106,7 +106,7 @@ Config.Dealerships = {
     ['lsiadealership'] = {
         label = "LSIA Dealership",
         type = "aircraft",
-        job = "aircraftsalesman",
+        job = nil,
         noDealerUpcharge = 1.0,
         displayPoints = {{id = "2001", x = -1651.6337890625, y = -3164.4704589844, z = 14.831066131592, h = 11.404408454895, radius = 20}, {id = "2002", x = -1671.6702880859, y = -3139.6337890625, z = 14.832282066345, h = 237.03048706055, radius = 20}},
         dealershipVehicles = {"alphaz1", "buzzard2", "conada", "cuban800", "dodo", "duster", "frogger", "havok", "howard", "luxor", "mammatus", "maverick", "microlight", "nimbus", "seabreeze", "seasparrow", "stunt", "vestra", "volatus"},
