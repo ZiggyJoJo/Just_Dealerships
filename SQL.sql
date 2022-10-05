@@ -3,7 +3,7 @@ ALTER TABLE `owned_vehicles`
 	ADD `weeklypayment` int(11) DEFAULT NULL,
 	ADD `rempayments` int(11) DEFAULT NULL,
 	ADD `nextpayment` int(11) DEFAULT NULL,
-	ADD `paymentsoverdue` tinyint(1) NOT NULL DEFAULT '0',
+	ADD `paymentsoverdue` tinyint(1) NOT NULL DEFAULT '0';
 ;
 
 CREATE TABLE `repoed_vehicles` (
