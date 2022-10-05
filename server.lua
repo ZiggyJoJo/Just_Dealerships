@@ -139,10 +139,11 @@ ESX.RegisterServerCallback('just_dealerships:buyVehicle', function(source, cb, m
 
     if Config.usePEFCL then
         balance = exports.pefcl:getDefaultAccountBalance(source)
-    else 
+        balance = balance.data
+    else
         balance = xPlayer.getAccount('bank').money
     end
-    if price and balance.data >= price then
+    if price and balance >= price then
 		MySQL.update('INSERT INTO owned_vehicles (owner, plate, vehicle, type) VALUES (@owner, @plate, @vehicle, @type)', {
 			['@owner']   = xPlayer.identifier,
 			['@plate']   = plate,
