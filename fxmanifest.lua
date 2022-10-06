@@ -17,3 +17,9 @@ client_scripts {
   '@es_extended/locale.lua',
   'client.lua',
 }
+
+provides {
+  'esx_vehicleshop'
+}
+
+export 'GeneratePlate'

@@ -18,50 +18,67 @@ Config.allowPurchaseWithoutDealer = true
 Config.usePEFCL = false
 
 Config.Dealerships = {
-    -- ['pdm'] = {        --  PDM dealership
-    --     label = "PDM", 
-    --     type = "car",
-    --     job = "cardealer",
-    --     noDealerUpcharge = 1.2,
-    --     displayPoints = {{id = "1", x = -45.833209991455, y = -1101.8262939453, z = 26.048042297363, h = 297.41680908203, radius = 4.0}, {id = "2", x = -40.188430786133, y = -1095.4486083984, z = 26.048389434814, h = 247.87591552734, radius = 4}, {id= "3", x = -49.150390625, y = -1092.9564208984, z = 26.047922134399, h = 92.333885192871, radius = 4}}, 
-    --     dealershipVehicles = {"adder", "carbonizzare", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
-    --     purchaseSpawn = {x = -30.63775062561, y = -1089.9173583984, z = 26.047746658325, h = 341.53689575195},
-    --     testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71}, 
-    --     zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, l = 160.0, w = 125, h = 80}, 
-    --     dealerZones = {{id = "1", x = -32.1, y = -1114.3, z = 26.4, l = 3.2, w = 2.2, h = 340}, {id = "2",x = -30.7, y = -1106.9, z = 26.4, l = 2.4, w = 4.2, h = 340}}, 
-    --     blip = {
-    --         scale = 0.7,
-    --         sprite = 523,
-    --         colour = 0
-    --     },
-    -- },
-    ['pdm'] = {        --  Gabz PDM dealership
-        label = "PDM",
+    ['pdm'] = {        --  PDM dealership
+        label = "PDM", 
         type = "car",
         job = "cardealer",
         noDealerUpcharge = 1.2,
-        displayPoints = {{id = "1", x = -36.900897979736, y = -1093.4631347656, z = 26.953510284424, h = 205.84243774414, radius = 4.3}, {id = "2", x = -42.393798828125, y = -1101.2033691406, z = 26.952049255371, h = 18.875175476074, radius = 4.3}, {id= "3", x = -47.4553565979, y = -1092.25, z = 26.953269958496, h = 280.92864990234, radius = 4.3}, {id = "4", x = -54.89, y = -1096.84, z = 26.953145980835, h = 31.069679260254, radius = 4.3}, {id = "5", x = -49.85, y = -1083.92, z = 26.954120635986, h = 68.269973754883, radius = 4.3}},
+        displayPoints = {
+            {id = "1", x = -45.833209991455, y = -1101.8262939453, z = 26.048042297363, h = 297.41680908203, radius = 4.0},
+            {id = "2", x = -40.188430786133, y = -1095.4486083984, z = 26.048389434814, h = 247.87591552734, radius = 4},
+            {id= "3", x = -49.150390625, y = -1092.9564208984, z = 26.047922134399, h = 92.333885192871, radius = 4}
+        },
         dealershipVehicles = {"adder", "carbonizzare", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
-        purchaseSpawn = {x = -23.439552307129, y = -1093.9099121094, z = 26.93145942688, h = 340.0778503418},
-        testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71},
-        zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, l = 160.0, w = 125, h = 80},
-        dealerZones = {{id = "1", x = -31.6, y = -1087.0, z = 27.3, l = 5, w = 3, h = 70}, {id = "2",x = -40.3, y = -1083.7, z = 27.3, l = 5, w = 3, h = 70}},
+        purchaseSpawn = {x = -30.63775062561, y = -1089.9173583984, z = 26.047746658325, h = 341.53689575195},
+        testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71}, 
+        zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, l = 160.0, w = 125, h = 80}, 
+        dealerZones = {{id = "1", x = -32.1, y = -1114.3, z = 26.4, l = 3.2, w = 2.2, h = 340}, {id = "2",x = -30.7, y = -1106.9, z = 26.4, l = 2.4, w = 4.2, h = 340}}, 
         blip = {
             scale = 0.7,
             sprite = 523,
             colour = 0
         },
     },
-    ['mosleys'] = {
+    -- ['pdm'] = {        --  Gabz PDM dealership
+    --     label = "PDM",
+    --     type = "car",
+    --     job = "cardealer",
+    --     noDealerUpcharge = 1.2,
+    --     displayPoints = {
+    --         {id = "1", x = -36.900897979736, y = -1093.4631347656, z = 26.953510284424, h = 205.84243774414, radius = 4.3},
+    --         {id = "2", x = -42.393798828125, y = -1101.2033691406, z = 26.952049255371, h = 18.875175476074, radius = 4.3},
+    --         {id= "3", x = -47.4553565979, y = -1092.25, z = 26.953269958496, h = 280.92864990234, radius = 4.3},
+    --         {id = "4", x = -54.89, y = -1096.84, z = 26.953145980835, h = 31.069679260254, radius = 4.3},
+    --         {id = "5", x = -49.85, y = -1083.92, z = 26.954120635986, h = 68.269973754883, radius = 4.3}
+    --     },
+    --     dealershipVehicles = {"adder", "carbonizzare", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
+    --     purchaseSpawn = {x = -23.439552307129, y = -1093.9099121094, z = 26.93145942688, h = 340.0778503418},
+    --     testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71},
+    --     zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, h = 80, l = 160.0, w = 125},
+    --     dealerZones = {{id = "1", x = -31.6, y = -1087.0, z = 27.3, l = 5, w = 3, h = 70}, {id = "2",x = -40.3, y = -1083.7, z = 27.3, l = 5, w = 3, h = 70}},
+    --     blip = {
+    --         scale = 0.7,
+    --         sprite = 523,
+    --         colour = 0
+    --     },
+    -- },
+    ['mosleys'] = {                     -- https://www.gta5-mods.com/maps/mosley-s-auto-shop-interior-sp-fivem
         label = "Mosleys",
         type = "car",
         job = "cardealer",
         noDealerUpcharge = 1.2,
-        displayPoints = {{id = "101", x = -43.756187438965, y = -1666.8153076172, z = 29.105569839478, h = 348.89010620117, radius = 3}, {id = "102", x = -38.562015533447, y = -1659.6413574219, z = 29.105318069458, h = 138.50910949707, radius = 3}, {id= "103", x = -32.88245010376, y = -1652.7485351563, z = 29.105392456055, h = 319.90380859375, radius = 3}, {id = "104", x = -27.05982208252, y = -1657.7639160156, z = 29.105247497559, h = 320.22604370117, radius = 3}, {id = "105", x = -25.637273788452, y = -1644.4520263672, z = 29.105285644531, h = 137.55940246582, radius = 3}, {id = "106", x = -18.777139663696, y = -1644.0079345703, z = 29.105987548828, h = 227.09756469727, radius = 3}},
+        displayPoints = {
+            {id = "101", x = -43.756187438965, y = -1666.8153076172, z = 29.105569839478, h = 348.89010620117, radius = 3},
+            {id = "102", x = -38.562015533447, y = -1659.6413574219, z = 29.105318069458, h = 138.50910949707, radius = 3},
+            {id= "103", x = -32.88245010376, y = -1652.7485351563, z = 29.105392456055, h = 319.90380859375, radius = 3},
+            {id = "104", x = -27.05982208252, y = -1657.7639160156, z = 29.105247497559, h = 320.22604370117, radius = 3},
+            {id = "105", x = -25.637273788452, y = -1644.4520263672, z = 29.105285644531, h = 137.55940246582, radius = 3},
+            {id = "106", x = -18.777139663696, y = -1644.0079345703, z = 29.105987548828, h = 227.09756469727, radius = 3}
+        },
         dealershipVehicles = {"adder", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
         purchaseSpawn = {x = -15.097937583923, y = -1651.4471435547, z = 29.105464935303, h = 319.18426513672},
         testDriveReturn = {x = -30.3, y = -1675.7, z = 29.5, l = 10.8, w = 6.2, h = 320},
-        zone = {name = 'mosleys', x = -37.1, y = -1671.26, z = 29.3, l = 115.0, w = 175.0, h = 50},
+        zone = {name = 'mosleys', x = -37.1, y = -1671.26, z = 29.3, h = 50, l = 115.0, w = 175.0},
         dealerZones = {{id = "101", x = -34.5, y = -1669.5, z = 29.5, l = 3.6, w = 2, h = 320}, {id = "102", x = -22.8, y = -1661.7, z = 29.5, l = 4.4, w = 2, h = 230}},
         blip = {
             scale = 0.7,
@@ -74,12 +91,40 @@ Config.Dealerships = {
         type = "car",
         job = "cardealer",
         noDealerUpcharge = 1.2,
-        displayPoints = {{id = "201", x = -75.574668884277, y = 74.769149780273, z = 71.537925720215, h = 179.43257141113, radius = 3}, {id = "202", x = -72.110527038574, y = 69.152305603027, z = 71.375228881836, h = 242.79821777344, radius = 3}, {id= "203", x = -58.070838928223, y = 64.60546875, z = 71.56632232666, h = 45.108745574951, radius = 3}},
+        displayPoints = {
+            {id = "201", x = -75.574668884277, y = 74.769149780273, z = 71.537925720215, h = 179.43257141113, radius = 3},
+            {id = "202", x = -72.110527038574, y = 69.152305603027, z = 71.375228881836, h = 242.79821777344, radius = 3},
+            {id= "203", x = -58.070838928223, y = 64.60546875, z = 71.56632232666, h = 45.108745574951, radius = 3}},
         dealershipVehicles = {"adder", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
         purchaseSpawn = {x = -68.290374755859, y = 82.642196655273, z = 71.159187316895, h = 66.907638549805},
         testDriveReturn = {x = -83.4, y = 80.8, z = 71.5, l = 7.8, w = 9.2, h = 330},
-        zone = {name = 'benefactor', x = -63.251064300537, y = 71.887306213379, z = 71.751014709473, l = 115.0, w = 125.0, h = 160},
+        zone = {name = 'benefactor', x = -63.251064300537, y = 71.887306213379, z = 71.751014709473, h = 160, l = 115.0, w = 125.0},
         dealerZones = {{id = "201", x = -53.9, y = 73.5, z = 71.9, l = 3.2, w = 1.8, h = 66}},
+        blip = {
+            scale = 0.7,
+            sprite = 523,
+            colour = 0
+        },
+    },
+    ['rockfordpdm'] = {                    -- https://www.gta5-mods.com/maps/car-dealer-fivem-sp-ready
+        label = "Rockford PDM",
+        type = "car",
+        job = "cardealer",
+        noDealerUpcharge = 1.2,
+        displayPoints = {
+            {id = "301", x = -1256.1612548828, y = -366.912109375, z = 36.795616149902, h = 317.599609375, radius = 5.5},
+            {id = "302", x = -1269.0178222656, y = -364.19546508789, z = 36.811130523682, h = 298.0924987793, radius = 3.5},
+            {id = "303", x = -1270.5413818359, y = -358.95928955078, z = 36.811038970947, h = 253.59112548828, radius = 3.5},
+            {id = "304", x = -1266.2327880859, y = -355.56298828125, z = 36.810150146484, h = 208.23434448242, radius = 3.5},
+            {id = "305", x = -1262.4798583984, y = -353.64169311523, z = 36.812606811523, h = 208.23434448242, radius = 3.5},
+            {id = "306", x = -1244.2906494141, y = -357.57168579102, z = 40.200401306152, h = 71.689147949219, radius = 2.6},
+            {id = "307", x = -1246.8040771484, y = -352.51431274414, z = 40.200412750244, h = 71.689147949219, radius = 2.6},
+        },
+        dealershipVehicles = {"adder", "carbonizzare", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
+        purchaseSpawn = {x = -1233.0629882813, y = -347.47476196289, z = 36.958026885986, h = 27.434091567993},
+        testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71},
+        zone = {name = 'rockfordpdm', x = -1256.8941650391, y = -357.15106201172, z = 36.907585144043, h = 30, l = 130, w = 175},
+        dealerZones = {{id = "301", x = -1249.05078125, y = -349.39489746094, z = 37.332885742188, l = 5, w = 3, h = 70}},
         blip = {
             scale = 0.7,
             sprite = 523,
@@ -92,7 +137,11 @@ Config.Dealerships = {
         type = "boat",
         job = nil,
         noDealerUpcharge = 1.0,
-        displayPoints = {{id = "1001", x = -725.59014892578, y = -1327.7091064453, z = -0.5, h = 230.74185180664, radius = 8}, {id = "1002", x = -736.84765625, y = -1341.8270263672, z = -0.5, h = 231.9787902832, radius = 8}, {id= "1003", x = -749.05078125, y = -1355.0386962891, z = -0.5, h = 229.51211547852, radius = 8}},
+        displayPoints = {
+            {id = "1001", x = -725.59014892578, y = -1327.7091064453, z = -0.5, h = 230.74185180664, radius = 8},
+            {id = "1002", x = -736.84765625, y = -1341.8270263672, z = -0.5, h = 231.9787902832, radius = 8},
+            {id= "1003", x = -749.05078125, y = -1355.0386962891, z = -0.5, h = 229.51211547852, radius = 8}
+        },
         dealershipVehicles = {"toro", "longfin", "speeder", "tropic", "suntrap", "squalo", "seashark", "marquis", "jetmax", "dinghy", "dinghy2"},
         purchaseSpawn = {x = -761.79022216797, y = -1370.4921875, z = 0.44267362356186, h = 229.0259552002},
         zone = {name = 'boatdealership', x = -739.84, y = -1345.35, z = 1.6, l = 170, w = 170, h = 50},
@@ -108,7 +157,10 @@ Config.Dealerships = {
         type = "aircraft",
         job = nil,
         noDealerUpcharge = 1.0,
-        displayPoints = {{id = "2001", x = -1651.6337890625, y = -3164.4704589844, z = 14.831066131592, h = 11.404408454895, radius = 20}, {id = "2002", x = -1671.6702880859, y = -3139.6337890625, z = 14.832282066345, h = 237.03048706055, radius = 20}},
+        displayPoints = {
+            {id = "2001", x = -1651.6337890625, y = -3164.4704589844, z = 14.831066131592, h = 11.404408454895, radius = 20},
+            {id = "2002", x = -1671.6702880859, y = -3139.6337890625, z = 14.832282066345, h = 237.03048706055, radius = 20}
+        },
         dealershipVehicles = {"alphaz1", "buzzard2", "conada", "cuban800", "dodo", "duster", "frogger", "havok", "howard", "luxor", "mammatus", "maverick", "microlight", "nimbus", "seabreeze", "seasparrow", "stunt", "vestra", "volatus"},
         purchaseSpawn = {x = -1548.4317626953, y = -3179.205078125, z = 14.787940979004, h = 329.57928466797},
         zone = {name = 'lsiadealership', x = -1638.0694580078, y = -3119.99609375, z = 14.79301071167, l = 250, w = 250, h = 50},

@@ -347,7 +347,7 @@ AddEventHandler('just_dealerships:viewClassVehicles', function (menu, display)
 				local veh
 				for k, v in pairs(Config.Dealerships[display_id[1]].displayPoints) do
 					if v.id == display_id[3] then
-						veh = lib.getClosestVehicle(vector3(v.x, v.y, v.z), 5, false)
+						veh = lib.getClosestVehicle(vector3(v.x, v.y, v.z), 4, false)
 
 						if DoesEntityExist(veh) then
 							TriggerEvent('just_dealerships:deleteVehicle', veh, display_id[1], display_id[3], true)
@@ -377,7 +377,7 @@ RegisterNetEvent('just_dealerships:spawnVehicle')
 AddEventHandler('just_dealerships:spawnVehicle', function(data, Vehicle, addToServerTable)
 	local veh
 	lib.requestModel(Vehicle)
-	veh = lib.getClosestVehicle(vector3(data.x, data.y, data.z), 5, false)
+	veh = lib.getClosestVehicle(vector3(data.x, data.y, data.z), 4, false)
 
 	if not DoesEntityExist(veh) then
 		displayVehicle = CreateVehicle(Vehicle, data.x, data.y, data.z, data.h, true, true)

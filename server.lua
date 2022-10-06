@@ -161,7 +161,7 @@ ESX.RegisterServerCallback('just_dealerships:buyVehicle', function(source, cb, m
             else 
                 xPlayer.removeAccountMoney('bank', price)
             end
-			
+
 			TriggerClientEvent("just_dealerships:notification",source , "A "..label.." now belongs to you","Plate: "..plate, "success")
 			cb(true)
 		end)
@@ -476,5 +476,33 @@ AddEventHandler('just_dealerships:setVehicleOwnedPlayerId', function (playerId, 
 	},
 	function (rowsChanged)
 		TriggerClientEvent('esx:showNotification', playerId, 'You have got a new car with plate ' ..vehicleProps.plate..'!', vehicleProps.plate)
+	end)
+end)
+
+
+
+
+-----------------------------------
+-- esx_vehicleshop compatability --
+-----------------------------------
+
+ESX.RegisterServerCallback('esx_vehicleshop:retrieveJobVehicles', function(source, cb, type)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
+	MySQL.query('SELECT * FROM owned_vehicles WHERE owner = ? AND type = ? AND job = ?', {xPlayer.identifier, type, xPlayer.job.name},
+	function(result)
+		cb(result)
+	end)
+end)
+
+RegisterNetEvent('esx_vehicleshop:setJobVehicleState')
+AddEventHandler('esx_vehicleshop:setJobVehicleState', function(plate, state)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
+	MySQL.update('UPDATE owned_vehicles SET `stored` = ? WHERE plate = ? AND job = ?', {state, plate, xPlayer.job.name},
+	function(rowsChanged)
+		if rowsChanged == 0 then
+			print(('[esx_vehicleshop] [^3WARNING^7] %s exploited the garage!'):format(xPlayer.identifier))
+		end
 	end)
 end)
