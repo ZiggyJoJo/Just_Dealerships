@@ -1,7 +1,5 @@
 # Just_Dealerships
- 
-Video Demo https://youtu.be/OwvNxNrX3U0
-
+<br><div><h4 align='center'><a href='https://youtu.be/OwvNxNrX3U0'>Video Demo</a></h4></div><br>
 # Description
 
 * All options are adjustable in the config
@@ -32,10 +30,6 @@ https://i.imgur.com/BLJDid7.png
 https://i.imgur.com/kTcIVEw.png
 
 # Support Me
-
-https://www.buymeacoffee.com/ZiggyJoJo
-
-https://ziggys-scripts.tebex.io
-
+<br><div><h4 align='left'><a href='https://www.buymeacoffee.com/ZiggyJoJo'>Buy Me A Coffee</a></h4></div><br>
+<br><div><h4 align='left'><a href='https://ziggys-scripts.tebex.io'>Tebex</a></h4></div><br>
 <br><div><h4 align='center'><a href='https://discord.gg/AWxBT49HR5'>Discord Server</a></h4></div><br>
-
