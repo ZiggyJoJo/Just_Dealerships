@@ -17,9 +17,11 @@ Config.allowPurchaseWithoutDealer = true
 
 Config.usePEFCL = false
 
+Config.OxTarget = false
+
 Config.Dealerships = {
     ['pdm'] = {        --  PDM dealership
-        label = "PDM", 
+        label = "PDM",
         type = "car",
         job = "cardealer",
         noDealerUpcharge = 1.2,
@@ -30,9 +32,12 @@ Config.Dealerships = {
         },
         dealershipVehicles = {"adder", "carbonizzare", "zion", "rebel2", "kamacho", "winky", "oracle2", "felon", "exemplar", "oracle", "windsor2", "kalahari", "sandking", "sandking2", "brawler", "sanchez2", "rancherxl", "issi2", "dilettante", "blista", "panto", "prairie", "rhapsody", "weevil", "entity2", "bifta", "dukes", "bati", "dubsta3", "f620", "granger", "sentinel2", "dominator", "gauntlet", "ztype", "bullet", "bjxl", "baller", "baller2", "cheetah", "infernus", "vacca", "voltic", "jester", "turismor", "massacro", "zentorno", "autarch", "buffalo4", "cheburek", "cheetah2", "comet4", "comet5", "comet7", "coquette4", "cyclone", "deviant", "dominator3", "dukes3", "furia", "gauntlet3", "gauntlet4", "gauntlet5", "glendale2", "imorgon", "impaler", "issi3", "italigto", "italirsx", "jb700", "komoda", "krieger", "neon", "neo", "patriot", "patriot2", "raiden", "retinue", "sc1", "shinobi", "stafford", "stryder", "thrax", "tigon", "vagner", "visione", "xa21", "z190", "stretch"},
         purchaseSpawn = {x = -30.63775062561, y = -1089.9173583984, z = 26.047746658325, h = 341.53689575195},
-        testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71}, 
-        zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, l = 160.0, w = 125, h = 80}, 
-        dealerZones = {{id = "1", x = -32.1, y = -1114.3, z = 26.4, l = 3.2, w = 2.2, h = 340}, {id = "2",x = -30.7, y = -1106.9, z = 26.4, l = 2.4, w = 4.2, h = 340}}, 
+        testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71},
+        zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, l = 160.0, w = 125, h = 80},
+        dealerZones = {{id = "1", x = -32.1, y = -1114.3, z = 26.4, l = 3.2, w = 2.2, h = 340}, {id = "2",x = -30.7, y = -1106.9, z = 26.4, l = 2.4, w = 4.2, h = 340}},
+        dealerTargetZones = {
+            {id = "1", x = -33.15, y = -115.0, z = 26.5, l = 0.65, w = 0.75, h = 340, height = 0.55},
+        },
         blip = {
             scale = 0.7,
             sprite = 523,
@@ -56,6 +61,12 @@ Config.Dealerships = {
     --     testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71},
     --     zone = {name = 'pdm', x = -46.302963256836, y = -1098.8643798828, z = 27.274354934692, h = 80, l = 160.0, w = 125},
     --     dealerZones = {{id = "1", x = -31.6, y = -1087.0, z = 27.3, l = 5, w = 3, h = 70}, {id = "2",x = -40.3, y = -1083.7, z = 27.3, l = 5, w = 3, h = 70}},
+    --     dealerTargetZones = {
+    --         {id = "1", x = -30.65, y = -1088.9, z = 27.3, l = 0.65, w = 0.75, h = 340, height = 0.65},
+    --         {id = "2", x = -33.25, y = -1087.9, z = 27.35, l = 1.25, w = 0.7, h = 340, height = 0.65},
+    --         {id = "3", x = -39.35, y = -1085.65, z = 27.4, l = 0.7, w = 0.7, h = 340, height = 0.7},
+    --         {id = "4", x = -42.0, y = -1084.7, z = 27.3, l = 1.2, w = 0.7, h = 340, height = 0.55},
+    --     },
     --     blip = {
     --         scale = 0.7,
     --         sprite = 523,
@@ -80,6 +91,10 @@ Config.Dealerships = {
         testDriveReturn = {x = -30.3, y = -1675.7, z = 29.5, l = 10.8, w = 6.2, h = 320},
         zone = {name = 'mosleys', x = -37.1, y = -1671.26, z = 29.3, h = 50, l = 115.0, w = 175.0},
         dealerZones = {{id = "101", x = -34.5, y = -1669.5, z = 29.5, l = 3.6, w = 2, h = 320}, {id = "102", x = -22.8, y = -1661.7, z = 29.5, l = 4.4, w = 2, h = 230}},
+        dealerTargetZones = {
+            {id = "1", x = -35.3, y = -1669.25, z = 29.6, l = 0.55, w = 1.0, h = 319.5, height = 0.5},
+            {id = "2", x = -21.4, y = -1661.85, z = 29.6, l = 1.0, w = 0.5, h = 319.5, height = 0.6},
+        },
         blip = {
             scale = 0.7,
             sprite = 523,
@@ -100,6 +115,9 @@ Config.Dealerships = {
         testDriveReturn = {x = -83.4, y = 80.8, z = 71.5, l = 7.8, w = 9.2, h = 330},
         zone = {name = 'benefactor', x = -63.251064300537, y = 71.887306213379, z = 71.751014709473, h = 160, l = 115.0, w = 125.0},
         dealerZones = {{id = "201", x = -53.9, y = 73.5, z = 71.9, l = 3.2, w = 1.8, h = 66}},
+        dealerTargetZones = {
+            {id = "1", x = -53.5, y = 74.45, z = 71.95, l = 0.85, w = 0.5, h = 337.5, height = 0.55},
+        },
         blip = {
             scale = 0.7,
             sprite = 523,
@@ -124,7 +142,11 @@ Config.Dealerships = {
         purchaseSpawn = {x = -1233.0629882813, y = -347.47476196289, z = 36.958026885986, h = 27.434091567993},
         testDriveReturn = {x = -11.9, y = -1081.2, z = 27.0, l = 19.4, w = 6.4, h = 71},
         zone = {name = 'rockfordpdm', x = -1256.8941650391, y = -357.15106201172, z = 36.907585144043, h = 30, l = 130, w = 175},
-        dealerZones = {{id = "301", x = -1249.05078125, y = -349.39489746094, z = 37.332885742188, l = 5, w = 3, h = 70}},
+        dealerZones = {{id = "301", x = -1249, y = -349.5, z = 36.9, l = 6.6, w = 2.2, h = 27}},
+        dealerTargetZones = {
+            {id = "1", x = -1249.0, y = -347.0, z = 37.4, l = 1.0, w = 0.5, h = 297.5, height = 0.6},
+            {id = "2", x = -1247.35, y = -350.55, z = 37.4, l = 0.65, w = 1, h = 25, height = 0.55},
+        },
         blip = {
             scale = 0.7,
             sprite = 523,

@@ -105,23 +105,9 @@ function onExit(self)
 		displayvehicles = {}
 	end
 	if dealership ~= nil then
-		if dealership.." TestDriveReturn" == self.name then
-			atTestDriveReturn = false
-		end
-		for k2, v2 in pairs(Config.Dealerships[dealership].displayPoints) do
-			if dealership.." Display "..v2.id == self.name then
-				atDisplay = false
-				break
-			end
-		end
-		if Config.Dealerships[dealership].dealerZones ~= nil and ESX.GetPlayerData().job.name == Config.Dealerships[dealership].job then
-			for k3, v3 in pairs(Config.Dealerships[dealership].dealerZones) do
-				if dealership.." dealerZone "..v3.id == self.name then
-					atDealerZone = false
-					break
-				end
-			end
-		end
+		atTestDriveReturn = false
+		atDisplay = false
+		atDealerZone = false
 	end
 end
 
@@ -129,6 +115,30 @@ function insideZone(self)
 end
 
 for k, v in pairs(Config.Dealerships) do
+	if Config.OxTarget and v.dealerTargetZones ~= nil then
+		for k2, v2 in pairs(v.dealerTargetZones) do
+			exports.ox_target:addBoxZone({
+				coords = vec3(v2.x, v2.y, v2.z),
+				size = vec3(v2.l, v2.w, v2.height),
+				rotation = v2.h,
+				debug = false,
+				options = {
+					{
+						name = k.." Zone "..v2.id,
+						event = 'just_dealerships:targetDealerZone',
+						icon = "fa-solid fa-desktop",
+						label = "Open Employee Catalog",
+						canInteract = function(entity, distance, coords, name)
+							if v.job == ESX.GetPlayerData().job.name then
+								return true
+							end
+						end,
+						distance = 2.5
+					},
+				}
+			})
+		end
+	end
 	lib.zones.box({
 		coords = vec3(v.zone.x, v.zone.y, v.zone.z),
 		size = vec3(v.zone.w, v.zone.l, 50),
@@ -165,18 +175,20 @@ for k, v in pairs(Config.Dealerships) do
 		})
 	end
 
-	if v.dealerZones ~= nil then
-		for k3, v3 in pairs(v.dealerZones) do
-			lib.zones.box({
-				coords = vec3(v3.x, v3.y, v3.z),
-				size = vec3(v3.w, v3.l, 10),
-				rotation = v3.h,
-				debug = false,
-				inside = insideZone,
-				onEnter = onEnter,
-				onExit = onExit,
-				name = v.zone.name.." dealerZone "..v3.id,
-			})
+	if not Config.OxTarget or v.dealerTargetZones == nil then
+		if v.dealerZones ~= nil then
+			for k3, v3 in pairs(v.dealerZones) do
+				lib.zones.box({
+					coords = vec3(v3.x, v3.y, v3.z),
+					size = vec3(v3.w, v3.l, 10),
+					rotation = v3.h,
+					debug = false,
+					inside = insideZone,
+					onEnter = onEnter,
+					onExit = onExit,
+					name = v.zone.name.." dealerZone "..v3.id,
+				})
+			end
 		end
 	end
 
@@ -216,6 +228,11 @@ end)
 --------------
 -- Displays --
 --------------
+
+RegisterNetEvent('just_dealerships:targetDealerZone')
+AddEventHandler('just_dealerships:targetDealerZone', function ()
+	TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership)
+end)
 
 RegisterNetEvent('just_dealerships:atDealerZone')
 AddEventHandler('just_dealerships:atDealerZone', function ()

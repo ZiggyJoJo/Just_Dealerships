@@ -50,7 +50,7 @@ AddEventHandler("just_dealerships:removeDisplayVehicle", function(dealership, di
                 if v2.display == display then
                     TriggerEvent('just_dealerships:updateDisplays', display)
                     table.remove(Displays, k2)
-                end                
+                end
             end
         end
     end
@@ -158,7 +158,7 @@ ESX.RegisterServerCallback('just_dealerships:buyVehicle', function(source, cb, m
             end
             if Config.usePEFCL then
                 exports.pefcl:removeBankBalance(source, { amount = price, message = ("Purchase of a "..label) })
-            else 
+            else
                 xPlayer.removeAccountMoney('bank', price)
             end
 
@@ -305,46 +305,47 @@ AddEventHandler('onServerResourceStart', function(resourceName)
         MySQL.query('SELECT * FROM owned_vehicles WHERE financed = @financed', {
             ['@financed'] = 1,
         }, function(vehicles)
-            for i=1, #vehicles, 1 do
-                local todaysDate = tonumber(os.date("%Y%m%d",os.time()))
-                if todaysDate > vehicles[i].nextpayment and vehicles[i].financed == 1 then
-                    -- local xPlayer = ESX.GetPlayerFromIdentifier(vehicles[i].owner)
-                    local balance
-                    local accounts
-                    if Config.usePEFCL then
-                        balance = exports.pefcl:getTotalBankBalanceByIdentifier(source, vehicles[i].owner)
-                        balance = balance.data
-                    else 
-                        accounts = MySQL.scalar.await('SELECT accounts FROM users WHERE identifier = @identifier', {['@identifier'] = vehicles[i].owner})
-                        accounts = json.decode(accounts)
-                        balance = accounts.bank
-                    end
-                    if vehicles[i].weeklypayment <= balance then
-                        local t = os.time()
-                        local date = os.date("%Y%m%d",t)
-                        local d = 7
-                        local renewDate = t + d * 24 * 60 * 60
-                        local paymentsLeft = vehicles[i].rempayments - 1
-                        MySQL.update.await('UPDATE owned_vehicles SET nextpayment = @nextpayment WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@nextpayment'] = os.date("%Y%m%d",renewDate)})
-                        MySQL.update.await('UPDATE owned_vehicles SET rempayments = @rempayments WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@rempayments'] = paymentsLeft})
+            if vehicles ~= nil then
+                for i=1, #vehicles, 1 do
+                    local todaysDate = tonumber(os.date("%Y%m%d",os.time()))
+                    if todaysDate > vehicles[i].nextpayment and vehicles[i].financed == 1 then
+                        local balance
+                        local accounts
                         if Config.usePEFCL then
-                            exports.pefcl:removeBankBalanceByIdentifier(source, { identifier = vehicles[i].owner, amount = vehicles[i].weeklypayment, message = "Vehicle finance payment "..paymentsLeft.." payments remaining" })
+                            balance = exports.pefcl:getTotalBankBalanceByIdentifier(source, vehicles[i].owner)
+                            balance = balance.data
                         else 
-                            accounts.bank = accounts.bank - vehicles[i].weeklypayment
-                            MySQL.update.await('UPDATE users SET accounts = @accounts WHERE identifier = @identifier', {['@identifier'] = vehicles[i].owner, ['@accounts'] = json.encode(accounts)})
+                            accounts = MySQL.scalar.await('SELECT accounts FROM users WHERE identifier = @identifier', {['@identifier'] = vehicles[i].owner})
+                            accounts = json.decode(accounts)
+                            balance = accounts.bank
                         end
-                        if paymentsLeft == 0 then
-                            MySQL.update.await('UPDATE owned_vehicles SET financed = @financed WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@financed'] = 0})
+                        if vehicles[i].weeklypayment <= balance then
+                            local t = os.time()
+                            local date = os.date("%Y%m%d",t)
+                            local d = 7
+                            local renewDate = t + d * 24 * 60 * 60
+                            local paymentsLeft = vehicles[i].rempayments - 1
+                            MySQL.update.await('UPDATE owned_vehicles SET nextpayment = @nextpayment WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@nextpayment'] = os.date("%Y%m%d",renewDate)})
+                            MySQL.update.await('UPDATE owned_vehicles SET rempayments = @rempayments WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@rempayments'] = paymentsLeft})
+                            if Config.usePEFCL then
+                                exports.pefcl:removeBankBalanceByIdentifier(source, { identifier = vehicles[i].owner, amount = vehicles[i].weeklypayment, message = "Vehicle finance payment "..paymentsLeft.." payments remaining" })
+                            else 
+                                accounts.bank = accounts.bank - vehicles[i].weeklypayment
+                                MySQL.update.await('UPDATE users SET accounts = @accounts WHERE identifier = @identifier', {['@identifier'] = vehicles[i].owner, ['@accounts'] = json.encode(accounts)})
+                            end
+                            if paymentsLeft == 0 then
+                                MySQL.update.await('UPDATE owned_vehicles SET financed = @financed WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@financed'] = 0})
+                            end
+                        elseif vehicles[i].paymentsoverdue > Config.maxMissedPayments then
+                            TriggerEvent("just_dealerships:repoVehicle", vehicles[i].plate)
+                        else
+                            local t = os.time()
+                            local date = os.date("%Y%m%d",t)
+                            local d = 7
+                            local renewDate = t + d * 24 * 60 * 60
+                            MySQL.update.await('UPDATE owned_vehicles SET nextpayment = @nextpayment WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@nextpayment'] = os.date("%Y%m%d",renewDate)})
+                            MySQL.update.await('UPDATE owned_vehicles SET paymentsoverdue = @paymentsoverdue WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@paymentsoverdue'] = ( vehicles[i].paymentsoverdue + 1)})
                         end
-                    elseif vehicles[i].paymentsoverdue > Config.maxMissedPayments then
-                        TriggerEvent("just_dealerships:repoVehicle", vehicles[i].plate)
-                    else
-                        local t = os.time()
-                        local date = os.date("%Y%m%d",t)
-                        local d = 7
-                        local renewDate = t + d * 24 * 60 * 60
-                        MySQL.update.await('UPDATE owned_vehicles SET nextpayment = @nextpayment WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@nextpayment'] = os.date("%Y%m%d",renewDate)})
-                        MySQL.update.await('UPDATE owned_vehicles SET paymentsoverdue = @paymentsoverdue WHERE plate = @plate', {['@plate'] = vehicles[i].plate, ['@paymentsoverdue'] = ( vehicles[i].paymentsoverdue + 1)})
                     end
                 end
             end
@@ -363,7 +364,6 @@ AddEventHandler("just_dealerships:repoVehicle", function(plate)
         if row then
             MySQL.insert('INSERT INTO repoed_vehicles (owner, plate, vehicle, type, job, weeklypayment, rempayments, paymentsoverdue) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {row.owner, row.plate, row.vehicle, row.type, row.job, row.weeklypayment, row.rempayments, row.paymentsoverdue}, function(changed)
                 if changed then
-                    -- print(changed)
                     MySQL.update('DELETE FROM owned_vehicles WHERE plate = @plate', {['@plate'] = plate}, function(affectedRows)
                         if affectedRows then
                             print(plate.." Repoed from "..row.owner)
