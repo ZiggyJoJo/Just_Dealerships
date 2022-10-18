@@ -1,25 +1,19 @@
 fx_version "cerulean"
 game { "gta5" }
 
-lua54 'yes'
+author 'snakewiz'
+description 'A flexible player customization script for FiveM.'
+repository 'https://github.com/pedr0fontoura/fivem-appearance'
+version '1.3.0'
 
-shared_scripts {
-  '@ox_lib/init.lua',
-  'config.lua',
+client_script 'game/dist/index.js'
+
+files {
+  'web/dist/index.html',
+  'web/dist/assets/*.js',
+  'locales/*.json',
+  'peds.json',
+  'tattoos.json'
 }
 
-server_scripts {
-  '@mysql-async/lib/MySQL.lua',
-  'server.lua',
-}
-
-client_scripts {
-  '@es_extended/locale.lua',
-  'client.lua',
-}
-
-provides {
-  'esx_vehicleshop'
-}
-
-export 'GeneratePlate'
+ui_page 'web/dist/index.html'

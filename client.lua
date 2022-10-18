@@ -1,7 +1,5 @@
 local dealership = nil
-local atDisplay
-local atDealerZone
-local atTestDriveReturn
+local showing = false
 local displayvehicles = {}
 
 Citizen.CreateThread(function()
@@ -13,6 +11,23 @@ Citizen.CreateThread(function()
 		Citizen.Wait(10)
 	end
 	ESX.PlayerData = ESX.GetPlayerData()
+end)
+
+RegisterNetEvent("esx:setJob")
+AddEventHandler("esx:setJob", function(job)
+	ESX.PlayerData.job = job
+end)
+
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded',function(xPlayer, isNew, skin)
+	ESX.PlayerData = ESX.GetPlayerData()
+end)
+
+RegisterNetEvent('esx:onPlayerLogout')
+AddEventHandler('esx:onPlayerLogout', function()
+    dealership = nil
+	showing = false
+	displayvehicles = {}
 end)
 
 local function Blips(coords, type, label, blipOptions)
@@ -61,6 +76,9 @@ end
 -- Polyzones --
 ---------------
 
+local vehicle = 0
+local passedCheck = false
+
 function onEnter(self)
 	if Config.Dealerships[self.name] ~= nil and  Config.Dealerships[self.name].zone.name == self.name then
 		dealership = self.name
@@ -68,50 +86,73 @@ function onEnter(self)
 		TriggerServerEvent('just_dealerships:playerEnteredDealership', dealership)
 		TriggerServerEvent('just_dealerships:getDisplays', dealership)
 	end
-	Citizen.Wait(100)
-	if dealership ~= nil then
-		if dealership.." TestDriveReturn" == self.name then
-			TriggerEvent('just_dealerships:atTestDriveReturn')
-			atTestDriveReturn = true
-		end
-		for k2, v2 in pairs(Config.Dealerships[dealership].displayPoints) do
-			if dealership.." Display "..v2.id == self.name then
-				print("Entered "..dealership.." Display "..v2.id)
-				atDisplay = true
-				Citizen.Wait(100)
-				TriggerEvent('just_dealerships:atDisplay', dealership.." Display " ..v2.id)
-				break
-			end
-		end
-		if Config.Dealerships[dealership].dealerZones ~= nil and ESX.GetPlayerData().job.name == Config.Dealerships[dealership].job then
-			for k3, v3 in pairs(Config.Dealerships[dealership].dealerZones) do
-				if dealership.." dealerZone "..v3.id == self.name then
-					-- print("Entered "..dealership.." Display "..v3.id)
-					atDealerZone = true
-					Citizen.Wait(100)
-					TriggerEvent('just_dealerships:atDealerZone')
-					break
-				end
-			end
-		end
-	end
 end
 
 function onExit(self)
 	lib.hideTextUI()
+	showing = false
 	if Config.Dealerships[self.name] ~= nil and  Config.Dealerships[self.name].zone.name == self.name then
 		TriggerServerEvent('just_dealerships:playerLeftDealership')
 		dealership = nil
+		passedCheck = false
 		displayvehicles = {}
-	end
-	if dealership ~= nil then
-		atTestDriveReturn = false
-		atDisplay = false
-		atDealerZone = false
 	end
 end
 
 function insideZone(self)
+	if dealership ~= nil then
+		if self.displayid ~= nil then
+			if dealership.." Display "..self.displayid == self.name then
+				if not showing then
+					showing = true
+					lib.showTextUI("[E] Browse Catalog", {icon = "fa-solid fa-car"})
+				end
+				if IsControlJustReleased(0, 54) then
+					showing = false
+					TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership, self.displayid)
+				end
+			end
+		end
+		if dealership.." dealerZone" == self.name then
+			if not showing then
+				showing = true
+				lib.showTextUI("[E] Employee Catalog", {icon = "fa-solid fa-car"})
+			end
+			if IsControlJustReleased(0, 54) then
+				showing = false
+				TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership)
+			end
+		end
+		if dealership.." TestDriveReturn" == self.name then
+			local ped = PlayerPedId()
+			if IsPedInAnyVehicle(ped, false) and Config.Dealerships[dealership].job == ESX.PlayerData.job.name then
+				if vehicle == 0 or not passedCheck then
+					vehicle = GetVehiclePedIsIn(ped, false)
+					if GetVehicleNumberPlateText(vehicle) == "TESTDRVE" then
+						passedCheck = true
+					else
+						passedCheck = false
+					end
+				else
+					if not showing then
+						showing = true
+						lib.showTextUI("[E] Retun Test Drive", {icon = "fa-solid fa-car"})
+					end
+					if IsControlJustReleased(0, 54) then
+						DeleteVehicle(vehicle)
+						vehicle = 0
+						passedCheck = false
+						showing = false
+					end
+				end
+			else
+				passedCheck = false
+				lib.hideTextUI()
+				vehicle = 0
+				showing = false
+			end
+		end
+	end
 end
 
 for k, v in pairs(Config.Dealerships) do
@@ -124,7 +165,7 @@ for k, v in pairs(Config.Dealerships) do
 				debug = false,
 				options = {
 					{
-						name = k.." Zone "..v2.id,
+						name = k.." EmployeeCatalog "..k2,
 						event = 'just_dealerships:targetDealerZone',
 						icon = "fa-solid fa-desktop",
 						label = "Open Employee Catalog",
@@ -149,7 +190,6 @@ for k, v in pairs(Config.Dealerships) do
 		onExit = onExit,
 		name = v.zone.name,
 	})
-
 	if v.testDriveReturn ~= nil then
 		lib.zones.box({
 			coords = vec3(v.testDriveReturn.x, v.testDriveReturn.y, v.testDriveReturn.z),
@@ -162,7 +202,6 @@ for k, v in pairs(Config.Dealerships) do
 			name = v.zone.name.." TestDriveReturn",
 		})
 	end
-
 	for k2, v2 in pairs(v.displayPoints) do
 		lib.zones.sphere({
 			coords = vec3(v2.x, v2.y, v2.z),
@@ -171,10 +210,10 @@ for k, v in pairs(Config.Dealerships) do
 			inside = insideZone,
 			onEnter = onEnter,
 			onExit = onExit,
-			name = v.zone.name.." Display "..v2.id,
+			name = v.zone.name.." Display "..k2,
+			displayid = k2,
 		})
 	end
-
 	if not Config.OxTarget or v.dealerTargetZones == nil then
 		if v.dealerZones ~= nil then
 			for k3, v3 in pairs(v.dealerZones) do
@@ -186,12 +225,11 @@ for k, v in pairs(Config.Dealerships) do
 					inside = insideZone,
 					onEnter = onEnter,
 					onExit = onExit,
-					name = v.zone.name.." dealerZone "..v3.id,
+					name = v.zone.name.." dealerZone",
 				})
 			end
 		end
 	end
-
     if v.blip ~= false then
         Blips(vector3(v.zone.x, v.zone.y, v.zone.z), v.type, v.label, v.blip)
     end
@@ -234,32 +272,6 @@ AddEventHandler('just_dealerships:targetDealerZone', function ()
 	TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership)
 end)
 
-RegisterNetEvent('just_dealerships:atDealerZone')
-AddEventHandler('just_dealerships:atDealerZone', function ()
-	lib.showTextUI("[E] Employee Catalog", {icon = "fa-solid fa-car"})
-    Citizen.CreateThread(function ()
-        while atDealerZone do
-            if IsControlJustReleased(0, 54) then
-				TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership)
-			end
-            Citizen.Wait(0)
-        end
-    end)
-end)
-
-RegisterNetEvent('just_dealerships:atDisplay')
-AddEventHandler('just_dealerships:atDisplay', function (display)
-	lib.showTextUI("[E] Browse Catalog", {icon = "fa-solid fa-car"})
-    Citizen.CreateThread(function ()
-        while atDisplay do
-            if IsControlJustReleased(0, 54) then
-                TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership, display)
-            end
-            Citizen.Wait(0)
-        end 
-    end)
-end)
-
 RegisterNetEvent('just_dealerships:sendDisplays')
 AddEventHandler('just_dealerships:sendDisplays', function(data)
 	if #data > 1 then
@@ -267,20 +279,19 @@ AddEventHandler('just_dealerships:sendDisplays', function(data)
 			if v.zone.name == dealership then
 				for k2, v2 in pairs(v.displayPoints) do
 					for k3, v3 in pairs(data) do
-
-						if v2.id == v3.display then
-							TriggerEvent('just_dealerships:spawnVehicle', v2, v3.vehicleName, false)
+						if k2 == v3.display then
+							TriggerEvent('just_dealerships:spawnVehicle', k2, v3.vehicleName, false)
 						end
 					end
 				end
 			end
 		end
-	else 
+	else
 		for k, v in pairs(Config.Dealerships) do
 			if v.zone.name == dealership then
 				for k2, v2 in pairs(v.displayPoints) do
 					local displayVehicle = math.random(1, #v.dealershipVehicles)
-					TriggerEvent('just_dealerships:spawnVehicle', v2, v.dealershipVehicles[displayVehicle], true)
+					TriggerEvent('just_dealerships:spawnVehicle', k2, v.dealershipVehicles[displayVehicle], true)
 				end
 			end
 		end
@@ -302,7 +313,7 @@ AddEventHandler('just_dealerships:viewDealershipVehicles', function (data, displ
 
 	table.sort(classesAvailable, function (k1, k2) return k1.label < k2.label end )
 	lib.registerMenu({
-		id = 'vehicle_class_select_menu',
+		id = 'class_select_menu',
 		title = 'Classes',
 		position = 'top-left',
 		onSideScroll = function(selected, scrollIndex, args)
@@ -313,13 +324,14 @@ AddEventHandler('just_dealerships:viewDealershipVehicles', function (data, displ
 		end,
 		options = classesAvailable
 	}, function(selected, scrollIndex, args)
-		ESX.TriggerServerCallback('just_dealerships:dealearCheck', function(success)
+		lib.callback('just_dealerships:dealearCheck', false, function(success)
+			classVehicles = {}
 			if success then
 				for k, v in pairs(data) do
 					if GetVehicleClassFromName(v.name) == args then
 						table.insert(classVehicles,  {
-							label = GetLabelText(GetDisplayNameFromVehicleModel(v.name)),
-							description = "Price: $"..comma_value(v.price),
+							label = GetLabelText(GetMakeNameFromVehicleModel(v.name)).."  "..GetLabelText(GetDisplayNameFromVehicleModel(v.name)),
+							description = tostring("Price: $"..comma_value(v.price)),
 							args = {name = v.name, price = v.price}
 						})
 					end
@@ -329,19 +341,19 @@ AddEventHandler('just_dealerships:viewDealershipVehicles', function (data, displ
 					if GetVehicleClassFromName(v.name) == args then
 						table.insert(classVehicles,  {
 							label = GetLabelText(GetMakeNameFromVehicleModel(v.name)).."  "..GetLabelText(GetDisplayNameFromVehicleModel(v.name)),
-							description = "Price: $"..comma_value(math.floor(v.price * Config.Dealerships[dealership].noDealerUpcharge)),
+							description = tostring("Price: $"..comma_value(math.floor(v.price * Config.Dealerships[dealership].noDealerUpcharge))),
 							args = {name = v.name, price = math.floor(v.price * Config.Dealerships[dealership].noDealerUpcharge)}
 						})
 					end
 				end
-			end
-		end, Config.Dealerships[dealership].job)		
-		Citizen.Wait(100)
+			end		
+		end, Config.Dealerships[dealership].job)
+		Citizen.Wait(500)
 		TriggerEvent('just_dealerships:viewClassVehicles', classVehicles, display)
 	end)
 
 	Citizen.Wait(100)
-	TriggerEvent('just_dealerships:showMenu', "vehicle_class_select_menu")
+	TriggerEvent('just_dealerships:showMenu', "class_select_menu")
 end)
 
 RegisterNetEvent('just_dealerships:viewClassVehicles')
@@ -353,29 +365,23 @@ AddEventHandler('just_dealerships:viewClassVehicles', function (menu, display)
 
 	Citizen.Wait(100)
 	lib.registerMenu({
-		id = 'vehicle_class_menu',
+		id = 'vehicle_select_menu',
 		title = 'Classes',
 		position = 'top-left',
 		onSideScroll = function(selected, scrollIndex, args)
 		end,
 		onSelected = function(selected, scrollIndex, args)
 			if display ~= nil then
-				local display_id = Split(display, " ")
+				local displayCords = Config.Dealerships[dealership].displayPoints[display]
 				local veh
-				for k, v in pairs(Config.Dealerships[display_id[1]].displayPoints) do
-					if v.id == display_id[3] then
-						veh = lib.getClosestVehicle(vector3(v.x, v.y, v.z), 4, false)
 
-						if DoesEntityExist(veh) then
-							TriggerEvent('just_dealerships:deleteVehicle', veh, display_id[1], display_id[3], true)
-						end
-						TriggerEvent('just_dealerships:spawnVehicle', v, args.name, true)
-						break
-					end
-				end
+				veh = lib.getClosestVehicle(vector3(displayCords.x, displayCords.y, displayCords.z), 5, false)
+				TriggerEvent('just_dealerships:deleteVehicle', veh, dealership, display, true)
+				TriggerEvent('just_dealerships:spawnVehicle', display, args.name, true)
 			end
 		end,
 		onClose = function()
+			TriggerEvent('just_dealerships:showMenu', "class_select_menu")
 		end,
 		options = menu
 	}, function(selected, scrollIndex, args)
@@ -387,14 +393,16 @@ AddEventHandler('just_dealerships:viewClassVehicles', function (menu, display)
 	end)
 
 	Citizen.Wait(10)
-	TriggerEvent('just_dealerships:showMenu', "vehicle_class_menu")
+	TriggerEvent('just_dealerships:showMenu', "vehicle_select_menu")
 end)
 
 RegisterNetEvent('just_dealerships:spawnVehicle')
-AddEventHandler('just_dealerships:spawnVehicle', function(data, Vehicle, addToServerTable)
+AddEventHandler('just_dealerships:spawnVehicle', function(id, Vehicle, addToServerTable)
 	local veh
+	local data = Config.Dealerships[dealership].displayPoints[id]
+	-- exports.xng_parsingtable:ParsingTable_cl(data)
 	lib.requestModel(Vehicle)
-	veh = lib.getClosestVehicle(vector3(data.x, data.y, data.z), 4, false)
+	veh = lib.getClosestVehicle(vector3(data.x, data.y, data.z), 5, false)
 
 	if not DoesEntityExist(veh) then
 		displayVehicle = CreateVehicle(Vehicle, data.x, data.y, data.z, data.h, true, true)
@@ -406,7 +414,7 @@ AddEventHandler('just_dealerships:spawnVehicle', function(data, Vehicle, addToSe
 
 		table.insert(displayvehicles,  {
 			dealership = dealership,
-			display = data.id,
+			display = id,
 			vehicleName = Vehicle,
 			vehicle = displayVehicle
 		})
@@ -415,7 +423,7 @@ AddEventHandler('just_dealerships:spawnVehicle', function(data, Vehicle, addToSe
 	if addToServerTable == true then
 		local vehicleData = {
 			dealership = dealership,
-			display = data.id,
+			display = id,
 			vehicleName = Vehicle,
 		}
 		TriggerServerEvent('just_dealerships:setDisplayVehicle', vehicleData)
@@ -483,39 +491,6 @@ AddEventHandler('just_dealerships:dealerOptions', function (data)
 	TriggerEvent('just_dealerships:showMenu', "dealer_options_menu", true)
 end)
 
-RegisterNetEvent('just_dealerships:atTestDriveReturn')
-AddEventHandler('just_dealerships:atTestDriveReturn', function ()
-	local showing = false
-	local vehicle = 0
-	local sleep = 0
-	local ped = PlayerPedId()
-    Citizen.CreateThread(function ()
-        while atTestDriveReturn do
-			if IsPedInAnyVehicle(ped, false) and Config.Dealerships[dealership].job == ESX.GetPlayerData().job.name then
-				sleep = 0
-				if vehicle ~= 0 then
-					if GetVehicleNumberPlateText(vehicle) == "TESTDRVE" then
-						if not showing then 
-							lib.showTextUI("[E] Retun Test Drive", {icon = "fa-solid fa-car"})
-						end
-						if IsControlJustReleased(0, 54) then
-							DeleteVehicle(vehicle)
-						end
-					end
-				else
-					vehicle = GetVehiclePedIsIn(ped, false)
-				end
-			else
-				lib.hideTextUI()
-				vehicle = 0 
-				showing = false
-				sleep = 2000
-			end
-            Citizen.Wait(sleep)
-        end
-    end)
-end)
-
 ----------------
 -- Purchasing --
 ----------------
@@ -562,7 +537,7 @@ AddEventHandler('just_dealerships:confirmPurchase', function (data, display, fin
 				icon = "ban",
 				onSelect = function(args)
 					if display ~= nil then
-						TriggerEvent('just_dealerships:showMenu', "vehicle_class_menu")
+						TriggerEvent('just_dealerships:showMenu', "vehicle_select_menu")
 					end
 				end,
 			},

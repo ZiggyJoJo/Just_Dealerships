@@ -170,7 +170,7 @@ ESX.RegisterServerCallback('just_dealerships:buyVehicle', function(source, cb, m
 	end
 end)
 
-ESX.RegisterServerCallback('just_dealerships:dealearCheck', function(source, cb, job)
+lib.callback.register('just_dealerships:dealearCheck', function(source, job)
 	local xPlayer = ESX.GetPlayerFromId(source)
     local Players = ESX.GetPlayers()
     local playersWorking = false
@@ -182,11 +182,27 @@ ESX.RegisterServerCallback('just_dealerships:dealearCheck', function(source, cb,
         end
     end
     if playersWorking then
-		cb(true)
-	else
-		cb(false)
+		return true
 	end
 end)
+
+-- ESX.RegisterServerCallback('just_dealerships:dealearCheck', function(source, cb, job)
+-- 	local xPlayer = ESX.GetPlayerFromId(source)
+--     local Players = ESX.GetPlayers()
+--     local playersWorking = false
+--     for i = 1, #Players, 1 do
+--         local tPlayer = ESX.GetPlayerFromId(Players[i])
+--         if tPlayer.job.name == job then
+--             playersWorking = true
+--             break
+--         end
+--     end
+--     if playersWorking then
+-- 		cb(true)
+-- 	else
+-- 		cb(false)
+-- 	end
+-- end)
 
 ---------------
 -- Financing --
