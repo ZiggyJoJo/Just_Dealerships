@@ -6,6 +6,7 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 local playersInDealerships = {}
 local Displays = {}
+local DisplaysInUse = {}
 
 RegisterServerEvent("just_dealerships:playerEnteredDealership")
 AddEventHandler("just_dealerships:playerEnteredDealership", function(dealership)
@@ -186,23 +187,34 @@ lib.callback.register('just_dealerships:dealearCheck', function(source, job)
 	end
 end)
 
--- ESX.RegisterServerCallback('just_dealerships:dealearCheck', function(source, cb, job)
--- 	local xPlayer = ESX.GetPlayerFromId(source)
---     local Players = ESX.GetPlayers()
---     local playersWorking = false
---     for i = 1, #Players, 1 do
---         local tPlayer = ESX.GetPlayerFromId(Players[i])
---         if tPlayer.job.name == job then
---             playersWorking = true
---             break
---         end
---     end
---     if playersWorking then
--- 		cb(true)
--- 	else
--- 		cb(false)
--- 	end
--- end)
+-------------------
+-- DisplaysInUse --
+-------------------
+
+RegisterServerEvent("just_dealerships:setDisplayInUse")
+AddEventHandler("just_dealerships:setDisplayInUse", function(display)
+    table.insert(DisplaysInUse, display)
+end)
+
+RegisterServerEvent("just_dealerships:setDisplayNotInUse")
+AddEventHandler("just_dealerships:setDisplayNotInUse", function(display)
+    for k, v in pairs(DisplaysInUse) do
+        if v == display then
+            table.remove(DisplaysInUse, k)
+        end
+    end
+end)
+
+lib.callback.register('just_dealerships:CheckDisplaysInUse', function(source, display)
+    local InUse = false
+    for k, v in pairs(DisplaysInUse) do
+        if v == display then
+            InUse = true
+        end
+    end
+	return InUse
+end)
+
 
 ---------------
 -- Financing --

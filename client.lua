@@ -1,6 +1,10 @@
 local dealership = nil
 local showing = false
 local displayvehicles = {}
+local viewing = false
+local check = true
+local active = false
+
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -16,11 +20,6 @@ end)
 RegisterNetEvent("esx:setJob")
 AddEventHandler("esx:setJob", function(job)
 	ESX.PlayerData.job = job
-end)
-
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded',function(xPlayer, isNew, skin)
-	ESX.PlayerData = ESX.GetPlayerData()
 end)
 
 RegisterNetEvent('esx:onPlayerLogout')
@@ -80,6 +79,7 @@ local vehicle = 0
 local passedCheck = false
 
 function onEnter(self)
+	check = true
 	if Config.Dealerships[self.name] ~= nil and  Config.Dealerships[self.name].zone.name == self.name then
 		dealership = self.name
 		Citizen.Wait(10)
@@ -91,6 +91,7 @@ end
 function onExit(self)
 	lib.hideTextUI()
 	showing = false
+	check = true
 	if Config.Dealerships[self.name] ~= nil and  Config.Dealerships[self.name].zone.name == self.name then
 		TriggerServerEvent('just_dealerships:playerLeftDealership')
 		dealership = nil
@@ -101,15 +102,22 @@ end
 
 function insideZone(self)
 	if dealership ~= nil then
-		if self.displayid ~= nil then
-			if dealership.." Display "..self.displayid == self.name then
+		if self.displayid ~= nil and not viewing then
+			if check then
+				active = lib.callback.await('just_dealerships:CheckDisplaysInUse', false, self.displayid)
+				check = false
+			end
+			if dealership.." Display "..self.displayid == self.name and not active then
 				if not showing then
 					showing = true
 					lib.showTextUI("[E] Browse Catalog", {icon = "fa-solid fa-car"})
 				end
 				if IsControlJustReleased(0, 54) then
-					showing = false
 					TriggerServerEvent('just_dealerships:getDealershipVehicles', dealership, self.displayid)
+					TriggerServerEvent('just_dealerships:setDisplayInUse', self.displayid)
+					check = true
+					showing = false
+					lib.hideTextUI()
 				end
 			end
 		end
@@ -155,85 +163,91 @@ function insideZone(self)
 	end
 end
 
-for k, v in pairs(Config.Dealerships) do
-	if Config.OxTarget and v.dealerTargetZones ~= nil then
-		for k2, v2 in pairs(v.dealerTargetZones) do
-			exports.ox_target:addBoxZone({
-				coords = vec3(v2.x, v2.y, v2.z),
-				size = vec3(v2.l, v2.w, v2.height),
-				rotation = v2.h,
-				debug = false,
-				options = {
-					{
-						name = k.." EmployeeCatalog "..k2,
-						event = 'just_dealerships:targetDealerZone',
-						icon = "fa-solid fa-desktop",
-						label = "Open Employee Catalog",
-						canInteract = function(entity, distance, coords, name)
-							if v.job == ESX.GetPlayerData().job.name then
-								return true
-							end
-						end,
-						distance = 2.5
-					},
-				}
-			})
-		end
-	end
-	lib.zones.box({
-		coords = vec3(v.zone.x, v.zone.y, v.zone.z),
-		size = vec3(v.zone.w, v.zone.l, 50),
-		rotation = v.zone.h,
-		debug = false,
-		inside = insideZone,
-		onEnter = onEnter,
-		onExit = onExit,
-		name = v.zone.name,
-	})
-	if v.testDriveReturn ~= nil then
-		lib.zones.box({
-			coords = vec3(v.testDriveReturn.x, v.testDriveReturn.y, v.testDriveReturn.z),
-			size = vec3(v.testDriveReturn.w, v.testDriveReturn.l, 10),
-			rotation = v.testDriveReturn.h,
-			debug = false,
-			inside = insideZone,
-			onEnter = onEnter,
-			onExit = onExit,
-			name = v.zone.name.." TestDriveReturn",
-		})
-	end
-	for k2, v2 in pairs(v.displayPoints) do
-		lib.zones.sphere({
-			coords = vec3(v2.x, v2.y, v2.z),
-			radius = v2.radius,
-			debug = false,
-			inside = insideZone,
-			onEnter = onEnter,
-			onExit = onExit,
-			name = v.zone.name.." Display "..k2,
-			displayid = k2,
-		})
-	end
-	if not Config.OxTarget or v.dealerTargetZones == nil then
-		if v.dealerZones ~= nil then
-			for k3, v3 in pairs(v.dealerZones) do
-				lib.zones.box({
-					coords = vec3(v3.x, v3.y, v3.z),
-					size = vec3(v3.w, v3.l, 10),
-					rotation = v3.h,
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded',function(xPlayer, isNew, skin)
+	ESX.PlayerData = ESX.GetPlayerData()
+	Citizen.Wait(500)
+	for k, v in pairs(Config.Dealerships) do
+		if Config.OxTarget and v.dealerTargetZones ~= nil then
+			for k2, v2 in pairs(v.dealerTargetZones) do
+				exports.ox_target:addBoxZone({
+					coords = vec3(v2.x, v2.y, v2.z),
+					size = vec3(v2.l, v2.w, v2.height),
+					rotation = v2.h,
 					debug = false,
-					inside = insideZone,
-					onEnter = onEnter,
-					onExit = onExit,
-					name = v.zone.name.." dealerZone",
+					options = {
+						{
+							name = k.." EmployeeCatalog "..k2,
+							event = 'just_dealerships:targetDealerZone',
+							icon = "fa-solid fa-desktop",
+							label = "Open Employee Catalog",
+							canInteract = function(entity, distance, coords, name)
+								if v.job == ESX.GetPlayerData().job.name then
+									return true
+								end
+							end,
+							distance = 2.5
+						},
+					}
 				})
 			end
 		end
+		lib.zones.box({
+			coords = vec3(v.zone.x, v.zone.y, v.zone.z),
+			size = vec3(v.zone.w, v.zone.l, 50),
+			rotation = v.zone.h,
+			debug = false,
+			inside = insideZone,
+			onEnter = onEnter,
+			onExit = onExit,
+			name = v.zone.name,
+		})
+		if v.testDriveReturn ~= nil then
+			lib.zones.box({
+				coords = vec3(v.testDriveReturn.x, v.testDriveReturn.y, v.testDriveReturn.z),
+				size = vec3(v.testDriveReturn.w, v.testDriveReturn.l, 10),
+				rotation = v.testDriveReturn.h,
+				debug = false,
+				inside = insideZone,
+				onEnter = onEnter,
+				onExit = onExit,
+				name = v.zone.name.." TestDriveReturn",
+			})
+		end
+		for k2, v2 in pairs(v.displayPoints) do
+			lib.zones.sphere({
+				coords = vec3(v2.x, v2.y, v2.z),
+				radius = v2.radius,
+				debug = false,
+				inside = insideZone,
+				onEnter = onEnter,
+				onExit = onExit,
+				name = v.zone.name.." Display "..k2,
+				displayid = k2,
+			})
+		end
+		if not Config.OxTarget or v.dealerTargetZones == nil then
+			if v.dealerZones ~= nil then
+				for k3, v3 in pairs(v.dealerZones) do
+					lib.zones.box({
+						coords = vec3(v3.x, v3.y, v3.z),
+						size = vec3(v3.w, v3.l, 10),
+						rotation = v3.h,
+						debug = false,
+						inside = insideZone,
+						onEnter = onEnter,
+						onExit = onExit,
+						name = v.zone.name.." dealerZone",
+					})
+				end
+			end
+		end
+		if v.blip ~= false then
+			Blips(vector3(v.zone.x, v.zone.y, v.zone.z), v.type, v.label, v.blip)
+		end
 	end
-    if v.blip ~= false then
-        Blips(vector3(v.zone.x, v.zone.y, v.zone.z), v.type, v.label, v.blip)
-    end
-end
+end)
+
 
 RegisterNetEvent('just_dealerships:showMenu')
 AddEventHandler('just_dealerships:showMenu', function (menu, context)
@@ -321,6 +335,9 @@ AddEventHandler('just_dealerships:viewDealershipVehicles', function (data, displ
 		onSelected = function(selected, scrollIndex, args)
 		end,
 		onClose = function()
+			viewing = false
+			check = true
+			TriggerServerEvent('just_dealerships:setDisplayNotInUse', display)
 		end,
 		options = classesAvailable
 	}, function(selected, scrollIndex, args)
@@ -402,14 +419,13 @@ AddEventHandler('just_dealerships:spawnVehicle', function(id, Vehicle, addToServ
 	local data = Config.Dealerships[dealership].displayPoints[id]
 	-- exports.xng_parsingtable:ParsingTable_cl(data)
 	lib.requestModel(Vehicle)
-	veh = lib.getClosestVehicle(vector3(data.x, data.y, data.z), 5, false)
+	veh = lib.getClosestVehicle(vector3(data.x, data.y, data.z), 4, false)
 
 	if not DoesEntityExist(veh) then
-		displayVehicle = CreateVehicle(Vehicle, data.x, data.y, data.z, data.h, true, true)
+		local displayVehicle = CreateVehicle(Vehicle, data.x, data.y, data.z, data.h, true, true)
 		SetVehicleDirtLevel(displayVehicle, 0.0)
 	
 		SetVehicleNumberPlateText(displayVehicle, "DISPLAY")
-		SetEntityAsMissionEntity(displayVehicle, true, true)
 		FreezeEntityPosition(displayVehicle, true)
 
 		table.insert(displayvehicles,  {
@@ -516,6 +532,12 @@ AddEventHandler('just_dealerships:confirmPurchase', function (data, display, fin
 		id = 'purchase_confirmation_menu',
 		title = 'Confirm Purchase',
 		onExit = function()
+			if display ~= nil then
+				TriggerServerEvent('just_dealerships:setDisplayNotInUse', display)
+				viewing = false
+				check = true
+				showing = false
+			end
 		end,
 		options = {
 			{
@@ -527,6 +549,12 @@ AddEventHandler('just_dealerships:confirmPurchase', function (data, display, fin
 						TriggerEvent('just_dealerships:financeVehicle', Config.Dealerships[dealership], data, financeLength, downPayment, dealerID)
 					else
 						TriggerEvent('just_dealerships:purchaseVehicle', Config.Dealerships[dealership], data, dealerID)
+					end
+					if display ~= nil then
+						TriggerServerEvent('just_dealerships:setDisplayNotInUse', display)
+						viewing = false
+						check = true
+						showing = false
 					end
 				end,
 				metadata = metadata
